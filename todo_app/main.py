@@ -2,7 +2,7 @@ import os
 
 
 def add_to_list(existing_list: list, new_item, location=None) -> None:
-    if location == None:
+    if location is None:
         existing_list.append(new_item)
     else:
         existing_list[location] = new_item
@@ -13,18 +13,34 @@ def remove_from_list(existing_list: list, index_to_remove: int):
     return removed_task
 
 
+def add_to_txt_file(items_to_add: list, file_name: str):
+    with open(file_name, "w") as f:
+        for item in items_to_add:
+            f.write(f"{item}\n")
+
+
 def display_list_ordered(task_list: list) -> None:
     for index, task in enumerate(task_list):
         print(f"{index + 1}. {task.title()}")
 
 
 def clear_console() -> None:
-    os.system("cls")
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
 def main():
     clear_console()
-    tasks: list = []
+    tasks = []
+    # Creates .txt file if one does not exist
+    try:
+        with open("todos.txt", "r") as f:
+            tasks = [task.rstrip() for task in f.readlines()]
+    except FileNotFoundError:
+        with open("todos.txt", "w") as f:
+            pass
 
     while True:
         user_action = input("Type add, complete, show, edit or exit: ").strip().lower()
@@ -32,7 +48,8 @@ def main():
         match user_action:
             case "exit":
                 clear_console()
-                display_list_ordered(tasks)
+                display_list_ordered(tasks) if len(tasks) > 0 else None
+                add_to_txt_file(tasks, "todos.txt")
                 break
 
             case "add":
