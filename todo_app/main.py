@@ -1,6 +1,17 @@
 import os
 
 
+def read_file_return_list(file_path: str) -> list:
+    """Opens text file and returns a list. Or creates one if one does not exist."""
+    try:
+        with open(file_path, "r") as f:
+            return [task.rstrip() for task in f.readlines()]
+    except FileNotFoundError:
+        with open(file_path, "w") as f:
+            pass
+        return []
+
+
 def add_to_list(existing_list: list, new_item, location=None) -> None:
     if location is None:
         existing_list.append(new_item)
@@ -33,14 +44,10 @@ def clear_console() -> None:
 
 def main():
     clear_console()
-    tasks = []
-    # Creates .txt file if one does not exist
-    try:
-        with open("todos.txt", "r") as f:
-            tasks = [task.rstrip() for task in f.readlines()]
-    except FileNotFoundError:
-        with open("todos.txt", "w") as f:
-            pass
+
+    # Reads the txt file or creates a blank file if one doesn't exists
+    tasks = read_file_return_list("todos.txt")
+    display_list_ordered(tasks)
 
     while True:
         user_action = input("Type add, complete, show, edit or exit: ").strip().lower()
