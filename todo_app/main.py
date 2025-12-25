@@ -1,4 +1,11 @@
 import os
+import time
+
+
+def return_current_time() -> str:
+    epoch_time = time.time()
+    current_time = time.ctime(epoch_time)
+    return current_time
 
 
 def read_file_return_list(file_path: str) -> list:
@@ -44,6 +51,7 @@ def clear_console() -> None:
 
 def main():
     clear_console()
+    print(f"It is {return_current_time()}")
 
     # Reads the txt file or creates a blank file if one doesn't exists
     tasks = read_file_return_list("todos.txt")
